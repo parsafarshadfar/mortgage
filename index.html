@@ -221,7 +221,7 @@
       <!-- Down Payment: single-line label with select on right side -->
       <div class="col-md-3">
         <label for="downPaymentModeSelect" class="d-block">
-          Down Payment: 
+          Down Payment:
           <select id="downPaymentModeSelect" class="form-select form-select-sm ms-2" style="width:auto; display:inline-block;">
             <option value="dollar" selected>Dollar</option>
             <option value="percent">Percent</option>
@@ -302,8 +302,7 @@
           <option value="semiannual" selected>Semi-Annual (Canada)</option>
         </select>
       </div>
-
-      <!-- We removed the schedule frequency input -->
+      <!-- (Removed schedule frequency input) -->
     </div>
 
     <!-- Collapsible Optional Costs (Accordion) -->
@@ -380,16 +379,17 @@
     <button id="downloadPdfBtn" class="btn btn-success">Download Summary as PDF</button>
   </div>
 
-  <!-- Accordion for Summary, Charts, and Amortization Schedule -->
-  <div class="accordion" id="mainAccordion">
-    <!-- 1) Mortgage Summary & Payment (Open by default) -->
+  <!-- Accordion for Summary, Charts, and Amortization Schedule (HIDDEN BY DEFAULT) -->
+  <div class="accordion" id="mainAccordion" style="display: none;">
+    <!-- 1) Mortgage Summary & Payment (Closed by default) -->
     <div class="accordion-item">
       <h2 class="accordion-header" id="summaryHeading">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSummary" aria-expanded="true" aria-controls="collapseSummary">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary">
           Mortgage Summary & Monthly Payment
         </button>
       </h2>
-      <div id="collapseSummary" class="accordion-collapse collapse show" aria-labelledby="summaryHeading" data-bs-parent="#mainAccordion">
+      <!-- remove 'show' from the classList here so it doesn't auto-open -->
+      <div id="collapseSummary" class="accordion-collapse collapse" aria-labelledby="summaryHeading" data-bs-parent="#mainAccordion">
         <div class="accordion-body" id="resultsSection" style="display:none;">
           <h3 class="mb-3">Mortgage Summary & Monthly Payment</h3>
 
@@ -550,6 +550,9 @@
   // Monthly schedule table
   const monthlyAmortTableEl   = document.getElementById("monthlyAmortTable").querySelector("tbody");
 
+  // The main Accordion (we'll hide/show it)
+  const mainAccordionEl       = document.getElementById("mainAccordion");
+
   let amortChart;        // Chart.js instance for bar chart
   let monthlyCostsPie;   // Chart.js instance for pie chart
 
@@ -618,6 +621,8 @@
     // Hide results first
     resultsSectionEl.style.display = "none";
     pdfButtonContainerEl.style.display = "none";
+    // Also hide the main accordion initially
+    mainAccordionEl.style.display = "none";
 
     // Gather mandatory inputs
     const homePriceRaw = parseFloat(homePriceEl.value.replaceAll(",", "")) || parseFloat(homePriceEl.value) || 0;
@@ -692,9 +697,10 @@
     const totalInterestPaid     = totalMortgagePayments - principal;
 
     // Show results section
+    // (1) Show the accordion itself
+    mainAccordionEl.style.display = "block";
+    // (2) Then show the summary sub-section & PDF button
     resultsSectionEl.style.display = "block";
-
-    // Show PDF button
     pdfButtonContainerEl.style.display = "block";
 
     // Format everything
