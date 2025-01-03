@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Advanced Mortgage Analysis</title>
+
+  <!-- Favicon (small home icon) -->
+  <link
+    rel="icon"
+    href="https://cdn-icons-png.flaticon.com/512/25/25694.png"
+    type="image/png"
+  />
+
+  <!-- Bootstrap 5 CSS (CDN) -->
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  />
+
+  <!-- Animate.css for fancy animations -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+  />
+
+  <!-- Chart.js (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- jsPDF (CDN) for PDF generation -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <!-- autoTable plugin for jsPDF (for tables) -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.28/dist/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    /* Body & Theming */
+    body {
+      background-color: #f4f6f9;
+      color: #333;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    /* Dark Mode */
+    body.dark-mode {
+      background-color: #1e1e1e;
+      color: #fff;
+    }
+    body.dark-mode .calculator-container {
+      background-color: #2c2c2c;
+      color: #fff;
+    }
+    body.dark-mode .form-section {
+      background-color: #3a3a3a;
+      color: #fff;
+    }
+    body.dark-mode .accordion-button {
+      color: #fff;
+      background-color: #2c2c2c;
+    }
+    body.dark-mode .accordion-button.collapsed {
+      background-color: #3a3a3a;
+      color: #fff;
+    }
+    body.dark-mode .accordion-body {
+      background-color: #2c2c2c;
+      color: #fff;
+    }
+    body.dark-mode table {
+      background-color: #2c2c2c;
+      color: #fff;
+    }
+    body.dark-mode th {
+      background-color: #444 !important;
+      color: #fff !important;
+    }
+    body.dark-mode td {
+      background-color: #333;
+      color: #fff;
+    }
+    body.dark-mode canvas {
+      background-color: #2c2c2c !important;
+      border-color: #555 !important;
+    }
+    body.dark-mode .accordion-item {
+      background-color: #2c2c2c;
+      color: #fff;
+    }
+    body.dark-mode .btn.btn-primary,
+    body.dark-mode .btn.btn-success {
+      color: #fff;
+    }
+    body.dark-mode .table-warning {
+      background-color: #5a4500 !important; /* ensure highlight in dark mode */
+      color: #fff !important;
+    }
+
+    .calculator-container {
+      max-width: 1200px;
+      margin: 30px auto;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      padding: 20px;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    h1, h2, h3 {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 10px;
+    }
+
+    .form-section {
+      padding: 20px;
+      background-color: #fdfdfd;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+      transition: background 0.4s ease;
+    }
+
+    .error-message {
+      color: red;
+      font-weight: bold;
+      margin-top: 10px;
+      display: none;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th {
+      background-color: #007bff;
+      color: #fff;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+    td, th {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    .chart-container {
+      position: relative;
+      margin: 20px auto;
+      text-align: center;
+    }
+    .chart-container canvas {
+      display: block;
+      margin: 0 auto;
+      background-color: #fff;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .amort-schedule {
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 20px;
+    }
+
+    /* Dark Mode Toggle */
+    .dark-mode-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      background-color: #ffffffdd;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    body.dark-mode .dark-mode-toggle {
+      background-color: #444;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Dark Mode Toggle -->
+<div class="dark-mode-toggle">
+  <label for="darkModeCheckbox" class="m-0">
+    <input type="checkbox" id="darkModeCheckbox" /> Dark Mode
+  </label>
+</div>
+
+<div class="calculator-container">
+  <h1>Advanced Mortgage Analysis</h1>
+
+  <!-- Input Form Section -->
+  <div class="form-section">
+    <!-- Error display -->
+    <div id="errorMessage" class="error-message"></div>
+
+    <div class="row mb-3">
+      <!-- Home Price -->
+      <div class="col-md-3">
+        <label for="homePrice">Home Price ($):</label>
+        <input
+          type="number"
+          id="homePrice"
+          class="form-control"
+          placeholder="e.g., 1,000,000"
+          value=""
+        />
+      </div>
+
+      <!-- Down Payment: single-line label with select on right side -->
+      <div class="col-md-3">
+        <label for="downPaymentModeSelect" class="d-block">
+          Down Payment: 
+          <select id="downPaymentModeSelect" class="form-select form-select-sm ms-2" style="width:auto; display:inline-block;">
+            <option value="dollar" selected>Dollar</option>
+            <option value="percent">Percent</option>
+          </select>
+        </label>
+        <input
+          type="number"
+          id="downPayment"
+          class="form-control"
+          placeholder="e.g., $200,000"
+          value=""
+        />
+      </div>
+
+      <!-- Amortization -->
+      <div class="col-md-3">
+        <label for="amortYears">Amortization (years):</label>
+        <input
+          type="number"
+          id="amortYears"
+          class="form-control"
+          placeholder="e.g., 30"
+          value="30"
+          min="1"
+          max="100"
+        />
+      </div>
+
+      <!-- Interest Rate -->
+      <div class="col-md-3">
+        <label for="interestRate">Interest Rate (% per year):</label>
+        <input
+          type="number"
+          step="0.0001"
+          id="interestRate"
+          class="form-control"
+          placeholder="e.g., 3.25"
+          value=""
+        />
+      </div>
+    </div>
+
+    <div class="row mb-3">
+      <!-- Start Year -->
+      <div class="col-md-3">
+        <label for="startYear">Start Year:</label>
+        <input
+          type="number"
+          id="startYear"
+          class="form-control"
+          value=""
+        />
+      </div>
+      <!-- Start Month -->
+      <div class="col-md-3">
+        <label for="startMonth">Start Month:</label>
+        <select id="startMonth" class="form-select">
+          <option value="1">Jan</option>
+          <option value="2">Feb</option>
+          <option value="3">Mar</option>
+          <option value="4">Apr</option>
+          <option value="5">May</option>
+          <option value="6">Jun</option>
+          <option value="7">Jul</option>
+          <option value="8">Aug</option>
+          <option value="9">Sep</option>
+          <option value="10">Oct</option>
+          <option value="11">Nov</option>
+          <option value="12">Dec</option>
+        </select>
+      </div>
+
+      <!-- Compounding Method -->
+      <div class="col-md-3">
+        <label for="compoundingMethod">Compounding Method:</label>
+        <select id="compoundingMethod" class="form-control">
+          <option value="monthly">Monthly (US)</option>
+          <option value="semiannual" selected>Semi-Annual (Canada)</option>
+        </select>
+      </div>
+
+      <!-- We removed the schedule frequency input -->
+    </div>
+
+    <!-- Collapsible Optional Costs (Accordion) -->
+    <div class="accordion" id="optionalCostsAccordion">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="optionalCostsHeading">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOptionalCosts" aria-expanded="false" aria-controls="collapseOptionalCosts">
+            Optional Costs
+          </button>
+        </h2>
+        <div id="collapseOptionalCosts" class="accordion-collapse collapse" aria-labelledby="optionalCostsHeading" data-bs-parent="#optionalCostsAccordion">
+          <div class="accordion-body">
+            <!-- Property Tax -->
+            <div class="d-flex align-items-center mb-3">
+              <input type="checkbox" id="propertyTaxToggle" class="form-check-input me-2" />
+              <label for="propertyTaxToggle" class="form-check-label me-3">Property Tax (yearly) $</label>
+              <input
+                type="number"
+                id="propertyTax"
+                class="form-control"
+                placeholder="e.g., $2,000"
+                value="0"
+                disabled
+                style="max-width: 150px;"
+              />
+            </div>
+
+            <!-- Condo Fee -->
+            <div class="d-flex align-items-center mb-3">
+              <input type="checkbox" id="condoFeeToggle" class="form-check-input me-2" />
+              <label for="condoFeeToggle" class="form-check-label me-3">Condo Fee (monthly) $</label>
+              <input
+                type="number"
+                id="condoFee"
+                class="form-control"
+                placeholder="e.g., $300"
+                value="0"
+                disabled
+                style="max-width: 150px;"
+              />
+            </div>
+
+            <!-- Other Costs -->
+            <div class="d-flex align-items-center">
+              <input type="checkbox" id="otherCostsToggle" class="form-check-input me-2" />
+              <label for="otherCostsToggle" class="form-check-label me-3">Other Costs (yearly) $</label>
+              <input
+                type="number"
+                id="otherCosts"
+                class="form-control"
+                placeholder="e.g., $500"
+                value="0"
+                disabled
+                style="max-width: 150px;"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr/>
+
+    <!-- Calculate Button -->
+    <div class="row">
+      <div class="col-md-12 d-flex align-items-end">
+        <button id="calculateBtn" class="btn btn-primary mt-4 w-100 animate__animated">Calculate Mortgage</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Button to Download Summary as PDF (hidden until results are generated) -->
+  <div class="text-center mb-3" style="display:none;" id="pdfButtonContainer">
+    <button id="downloadPdfBtn" class="btn btn-success">Download Summary as PDF</button>
+  </div>
+
+  <!-- Accordion for Summary, Charts, and Amortization Schedule -->
+  <div class="accordion" id="mainAccordion">
+    <!-- 1) Mortgage Summary & Payment (Open by default) -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="summaryHeading">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSummary" aria-expanded="true" aria-controls="collapseSummary">
+          Mortgage Summary & Monthly Payment
+        </button>
+      </h2>
+      <div id="collapseSummary" class="accordion-collapse collapse show" aria-labelledby="summaryHeading" data-bs-parent="#mainAccordion">
+        <div class="accordion-body" id="resultsSection" style="display:none;">
+          <h3 class="mb-3">Mortgage Summary & Monthly Payment</h3>
+
+          <!-- Summary Table (Row-wise), highlight the first two rows -->
+          <div class="table-responsive">
+            <table class="table table-bordered table-sm text-start">
+              <colgroup>
+                <!-- Make the first column larger and the second column smaller -->
+                <col style="width: 60%;">
+                <col style="width: 40%;">
+              </colgroup>
+              <thead>
+                <tr class="table-info">
+                  <th>Item</th>
+                  <th>Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Two highlighted rows (visible in light/dark mode) -->
+                <tr class="table-warning">
+                  <td>Base Monthly Payment</td>
+                  <td>$<span id="mortgagePayment">--</span></td>
+                </tr>
+                <tr class="table-warning">
+                  <td>Total Monthly Payment (Incl. Opt. Costs)</td>
+                  <td>$<span id="totalMonthlyPayment">--</span></td>
+                </tr>
+                <tr>
+                  <td>Home Price</td>
+                  <td>$<span id="summaryHomePrice">--</span></td>
+                </tr>
+                <tr>
+                  <td>Down Payment</td>
+                  <td>$<span id="summaryDownPayment">--</span></td>
+                </tr>
+                <tr>
+                  <td>Loan Amount</td>
+                  <td>$<span id="summaryLoanAmount">--</span></td>
+                </tr>
+                <tr>
+                  <td>Total of All Mortgage Payments</td>
+                  <td>$<span id="summaryTotalPaid">--</span></td>
+                </tr>
+                <tr>
+                  <td>Total Interest (Life of Loan)</td>
+                  <td>$<span id="summaryTotalInterest">--</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2) Charts (Closed by default) -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="chartsHeading">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseCharts" aria-expanded="false" aria-controls="collapseCharts">
+          Charts
+        </button>
+      </h2>
+      <div id="collapseCharts" class="accordion-collapse collapse" aria-labelledby="chartsHeading" data-bs-parent="#mainAccordion">
+        <div class="accordion-body">
+          <!-- Bar Chart Container (Amortization) -->
+          <div class="chart-container">
+            <canvas id="amortChart" width="800" height="400"></canvas>
+          </div>
+
+          <!-- Pie Chart Container (Monthly Costs) -->
+          <div class="chart-container" style="display:none;" id="pieChartContainer">
+            <canvas id="monthlyCostsPieChart" width="400" height="400"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3) Amortization Schedule (Closed by default, only monthly) -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="scheduleHeading">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSchedule" aria-expanded="false" aria-controls="collapseSchedule">
+          Amortization Schedule (Monthly)
+        </button>
+      </h2>
+      <div id="collapseSchedule" class="accordion-collapse collapse" aria-labelledby="scheduleHeading" data-bs-parent="#mainAccordion">
+        <div class="accordion-body">
+          <!-- The monthly schedule table -->
+          <div class="amort-schedule">
+            <table id="monthlyAmortTable">
+              <thead>
+                <tr>
+                  <th>Year-Month</th>
+                  <th>Interest</th>
+                  <th>Principal</th>
+                  <th>Ending Balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Rows get dynamically added here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bootstrap 5 JS (CDN) -->
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+></script>
+
+<script>
+  // DOM Elements
+  const bodyEl                    = document.querySelector("body");
+  const darkModeCheckboxEl        = document.getElementById("darkModeCheckbox");
+
+  const homePriceEl               = document.getElementById("homePrice");
+  const downPaymentEl             = document.getElementById("downPayment");
+  const downPaymentModeSelectEl   = document.getElementById("downPaymentModeSelect");
+
+  const amortYearsEl              = document.getElementById("amortYears");
+  const interestRateEl            = document.getElementById("interestRate");
+  const compoundingMethodEl       = document.getElementById("compoundingMethod");
+
+  const propertyTaxToggleEl = document.getElementById("propertyTaxToggle");
+  const propertyTaxEl       = document.getElementById("propertyTax");
+  const condoFeeToggleEl    = document.getElementById("condoFeeToggle");
+  const condoFeeEl          = document.getElementById("condoFee");
+  const otherCostsToggleEl  = document.getElementById("otherCostsToggle");
+  const otherCostsEl        = document.getElementById("otherCosts");
+
+  const calculateBtn        = document.getElementById("calculateBtn");
+  const errorMessageEl      = document.getElementById("errorMessage");
+
+  // Summary display
+  const resultsSectionEl          = document.getElementById("resultsSection");
+  const mortgagePaymentEl         = document.getElementById("mortgagePayment");
+  const totalMonthlyPaymentEl     = document.getElementById("totalMonthlyPayment");
+  const summaryHomePriceEl        = document.getElementById("summaryHomePrice");
+  const summaryDownPaymentEl      = document.getElementById("summaryDownPayment");
+  const summaryLoanAmountEl       = document.getElementById("summaryLoanAmount");
+  const summaryTotalPaidEl        = document.getElementById("summaryTotalPaid");
+  const summaryTotalInterestEl    = document.getElementById("summaryTotalInterest");
+
+  // Start year/month
+  const startYearEl  = document.getElementById("startYear");
+  const startMonthEl = document.getElementById("startMonth");
+
+  // Chart & PDF
+  const amortChartEl          = document.getElementById("amortChart");
+  const monthlyCostsPieChartEl= document.getElementById("monthlyCostsPieChart");
+  const pieChartContainerEl   = document.getElementById("pieChartContainer");
+  const downloadPdfBtn        = document.getElementById("downloadPdfBtn");
+  const pdfButtonContainerEl  = document.getElementById("pdfButtonContainer");
+
+  // Monthly schedule table
+  const monthlyAmortTableEl   = document.getElementById("monthlyAmortTable").querySelector("tbody");
+
+  let amortChart;        // Chart.js instance for bar chart
+  let monthlyCostsPie;   // Chart.js instance for pie chart
+
+  // Dark Mode Toggle
+  darkModeCheckboxEl.addEventListener("change", () => {
+    if (darkModeCheckboxEl.checked) {
+      bodyEl.classList.add("dark-mode");
+    } else {
+      bodyEl.classList.remove("dark-mode");
+    }
+  });
+
+  // Auto-set the default year/month to next month from now
+  (function setDefaultStartDate(){
+    const today = new Date();
+    let year  = today.getFullYear();
+    let month = today.getMonth() + 1; // january=0
+
+    // Next month
+    month += 1;
+    if (month > 12) {
+      month = 1;
+      year += 1;
+    }
+    startYearEl.value = year;
+    startMonthEl.value = month; // 1..12
+  })();
+
+  // Down Payment Mode (Dollar or Percent)
+  downPaymentModeSelectEl.addEventListener("change", () => {
+    if (downPaymentModeSelectEl.value === "dollar") {
+      downPaymentEl.placeholder = "e.g., $200,000";
+    } else {
+      downPaymentEl.placeholder = "e.g., 20%";
+    }
+  });
+
+  // Enable/Disable optional fields based on toggles
+  propertyTaxToggleEl.addEventListener("change", () => {
+    propertyTaxEl.disabled = !propertyTaxToggleEl.checked;
+    if (!propertyTaxToggleEl.checked) propertyTaxEl.value = 0;
+  });
+
+  condoFeeToggleEl.addEventListener("change", () => {
+    condoFeeEl.disabled = !condoFeeToggleEl.checked;
+    if (!condoFeeToggleEl.checked) condoFeeEl.value = 0;
+  });
+
+  otherCostsToggleEl.addEventListener("change", () => {
+    otherCostsEl.disabled = !otherCostsToggleEl.checked;
+    if (!otherCostsToggleEl.checked) otherCostsEl.value = 0;
+  });
+
+  // On Calculate Click
+  calculateBtn.addEventListener("click", () => {
+    // Animate button
+    calculateBtn.classList.add("animate__heartBeat");
+    setTimeout(() => {
+      calculateBtn.classList.remove("animate__heartBeat");
+    }, 1000);
+
+    // Clear previous error message
+    errorMessageEl.style.display = "none";
+    errorMessageEl.textContent = "";
+
+    // Hide results first
+    resultsSectionEl.style.display = "none";
+    pdfButtonContainerEl.style.display = "none";
+
+    // Gather mandatory inputs
+    const homePriceRaw = parseFloat(homePriceEl.value.replaceAll(",", "")) || parseFloat(homePriceEl.value) || 0;
+    const downPaymentRaw = parseFloat(downPaymentEl.value) || 0;
+    const years = parseFloat(amortYearsEl.value) || 0;
+    const nominalAnnualRate = parseFloat(interestRateEl.value) || 0;
+
+    // Validate mandatory fields
+    if (!homePriceEl.value || homePriceRaw <= 0) {
+      showError("Please enter a valid Home Price.");
+      return;
+    }
+    if (!downPaymentEl.value || downPaymentRaw < 0) {
+      showError("Please enter a valid Down Payment.");
+      return;
+    }
+    if (!amortYearsEl.value || years <= 0) {
+      showError("Please enter a valid Amortization (years).");
+      return;
+    }
+    if (!interestRateEl.value || nominalAnnualRate < 0) {
+      showError("Please enter a valid Interest Rate.");
+      return;
+    }
+
+    const isDollarMode = (downPaymentModeSelectEl.value === "dollar");
+    const downPaymentAmt = isDollarMode
+      ? downPaymentRaw
+      : (downPaymentRaw / 100) * homePriceRaw;
+
+    // Start year-month
+    const startYear  = parseInt(startYearEl.value) || new Date().getFullYear();
+    const startMonth = parseInt(startMonthEl.value) || 1; // 1..12
+
+    // Optional values
+    const yearlyPropertyTax = propertyTaxToggleEl.checked ? parseFloat(propertyTaxEl.value) || 0 : 0;
+    const monthlyCondoFee   = condoFeeToggleEl.checked ? parseFloat(condoFeeEl.value)   || 0 : 0;
+    const yearlyOtherCosts  = otherCostsToggleEl.checked ? parseFloat(otherCostsEl.value)  || 0 : 0;
+
+    // Mortgage principal
+    const principal = homePriceRaw - downPaymentAmt;
+    const totalMonths = years * 12;
+
+    // Determine monthly interest
+    let i = 0;
+    if (compoundingMethodEl.value === "monthly") {
+      // US style monthly compounding
+      i = (nominalAnnualRate / 100) / 12;
+    } else {
+      // Semi-annual compounding => typical Canadian approach
+      const r = (nominalAnnualRate / 100);
+      i = Math.pow(1 + r / 2, 1/6) - 1;
+    }
+
+    // Calculate monthly mortgage payment
+    let monthlyPayment = 0;
+    if (i === 0) {
+      monthlyPayment = principal / totalMonths;
+    } else {
+      monthlyPayment = principal *
+        ( i * Math.pow(1 + i, totalMonths) ) /
+        ( Math.pow(1 + i, totalMonths) - 1 );
+    }
+
+    // Additional monthly costs
+    const monthlyPropertyTax = yearlyPropertyTax / 12;
+    const monthlyOtherCosts  = yearlyOtherCosts / 12;
+    const totalMonthlyPayment = monthlyPayment + monthlyPropertyTax + monthlyCondoFee + monthlyOtherCosts;
+
+    // Summaries
+    const totalMortgagePayments = monthlyPayment * totalMonths;
+    const totalInterestPaid     = totalMortgagePayments - principal;
+
+    // Show results section
+    resultsSectionEl.style.display = "block";
+
+    // Show PDF button
+    pdfButtonContainerEl.style.display = "block";
+
+    // Format everything
+    mortgagePaymentEl.textContent       = formatNumber(monthlyPayment);
+    totalMonthlyPaymentEl.textContent   = formatNumber(totalMonthlyPayment);
+    summaryHomePriceEl.textContent      = formatNumber(homePriceRaw);
+    summaryDownPaymentEl.textContent    = formatNumber(downPaymentAmt);
+    summaryLoanAmountEl.textContent     = formatNumber(principal);
+    summaryTotalPaidEl.textContent      = formatNumber(totalMortgagePayments);
+    summaryTotalInterestEl.textContent  = formatNumber(totalInterestPaid);
+
+    // Build / Refresh the monthly schedule
+    generateMonthlySchedule({
+      principal,
+      monthlyPayment,
+      monthlyInterest: i,
+      totalMonths,
+      startYear,
+      startMonth,
+    });
+
+    // Render the bar chart (amortization) using monthly data
+    renderAmortChart();
+
+    // Decide whether to show the monthly costs pie chart or not
+    const anyOptionalCosts = (yearlyPropertyTax > 0 || monthlyCondoFee > 0 || yearlyOtherCosts > 0);
+    if (anyOptionalCosts) {
+      pieChartContainerEl.style.display = "block";
+      renderMonthlyCostsPie({
+        mortgage: monthlyPayment,
+        tax: monthlyPropertyTax,
+        condo: monthlyCondoFee,
+        other: monthlyOtherCosts
+      });
+    } else {
+      pieChartContainerEl.style.display = "none";
+    }
+  });
+
+  function showError(msg) {
+    errorMessageEl.style.display = "block";
+    errorMessageEl.textContent = msg;
+  }
+
+  // Generate monthly schedule
+  function generateMonthlySchedule({
+    principal,
+    monthlyPayment,
+    monthlyInterest,
+    totalMonths,
+    startYear,
+    startMonth
+  }) {
+    // Clear old data
+    monthlyAmortTableEl.innerHTML = "";
+
+    let balance = principal;
+    let currentYear  = startYear;
+    let currentMonth = startMonth;
+
+    for (let m = 1; m <= totalMonths; m++) {
+      const interestPaid  = balance * monthlyInterest;
+      const principalPaid = monthlyPayment - interestPaid;
+      balance -= principalPaid;
+      if (balance < 0) balance = 0;
+
+      const dateLabel = `${currentYear}-${getMonthName(currentMonth)}`;
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td>${dateLabel}</td>
+        <td>$${formatNumber(interestPaid)}</td>
+        <td>$${formatNumber(principalPaid)}</td>
+        <td>$${formatNumber(balance)}</td>
+      `;
+      monthlyAmortTableEl.appendChild(row);
+
+      // Next month
+      currentMonth++;
+      if (currentMonth > 12) {
+        currentMonth = 1;
+        currentYear++;
+      }
+      if (balance <= 0) break;
+    }
+  }
+
+  // Return e.g., "Jan"
+  function getMonthName(monthNum) {
+    const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    return monthNames[monthNum-1] || "";
+  }
+
+  // Format number with commas
+  function formatNumber(num) {
+    if (isNaN(num)) return "0";
+    return parseFloat(num.toFixed(2)).toLocaleString("en-US", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+  }
+
+  // Render the stacked bar chart using monthly data
+  function renderAmortChart() {
+    const rows = monthlyAmortTableEl.querySelectorAll("tr");
+    let labels        = [];
+    let interestData  = [];
+    let principalData = [];
+
+    rows.forEach((row) => {
+      const cells = row.querySelectorAll("td");
+      if (cells.length === 4) {
+        labels.push(cells[0].innerText);
+        interestData.push(parseFloat(cells[1].innerText.replace(/[\$,]/g, "")));
+        principalData.push(parseFloat(cells[2].innerText.replace(/[\$,]/g, "")));
+      }
+    });
+
+    if (labels.length === 0) {
+      amortChartEl.style.display = "none";
+      return;
+    }
+    amortChartEl.style.display = "block";
+
+    // Destroy old chart
+    if (amortChart) {
+      amortChart.destroy();
+    }
+
+    amortChart = new Chart(amortChartEl, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Interest",
+            data: interestData,
+            backgroundColor: "rgba(255, 99, 132, 0.6)",
+            stack: "combined",
+          },
+          {
+            label: "Principal",
+            data: principalData,
+            backgroundColor: "rgba(54, 162, 235, 0.6)",
+            stack: "combined",
+          },
+        ],
+      },
+      options: {
+        responsive: false,
+        scales: {
+          x: {
+            stacked: true,
+          },
+          y: {
+            stacked: true,
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: "Amount ($)",
+            },
+          },
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: "Mortgage Amortization (Monthly, Interest vs. Principal)",
+          },
+          legend: {
+            position: "top",
+          },
+        },
+      },
+    });
+  }
+
+  // Render the pie chart for monthly costs
+  function renderMonthlyCostsPie({ mortgage, tax, condo, other }) {
+    // Destroy previous chart if exists
+    if (monthlyCostsPie) {
+      monthlyCostsPie.destroy();
+    }
+
+    const monthlyData = [mortgage, tax, condo, other];
+    const monthlyLabels = ["Mortgage", "Property Tax", "Condo Fee", "Other"];
+
+    monthlyCostsPie = new Chart(monthlyCostsPieChartEl, {
+      type: "pie",
+      data: {
+        labels: monthlyLabels,
+        datasets: [
+          {
+            label: "Monthly Cost Breakdown",
+            data: monthlyData,
+            backgroundColor: [
+              "rgba(75, 192, 192, 0.7)",
+              "rgba(255, 206, 86, 0.7)",
+              "rgba(153, 102, 255, 0.7)",
+              "rgba(255, 159, 64, 0.7)"
+            ]
+          }
+        ]
+      },
+      options: {
+        responsive: false,
+        plugins: {
+          title: {
+            display: true,
+            text: "Monthly Costs Breakdown"
+          },
+          legend: {
+            position: "bottom"
+          }
+        }
+      }
+    });
+  }
+
+  // Download summary as PDF
+  downloadPdfBtn.addEventListener("click", () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: "pt", format: "letter" });
+
+    doc.setFontSize(14);
+    doc.text("Mortgage Summary", 40, 40);
+
+    // Gather data
+    const monthlyPaymentVal   = mortgagePaymentEl.textContent;
+    const totalMonthlyPayVal  = totalMonthlyPaymentEl.textContent;
+    const homePriceVal        = summaryHomePriceEl.textContent;
+    const downPaymentVal      = summaryDownPaymentEl.textContent;
+    const loanAmountVal       = summaryLoanAmountEl.textContent;
+    const totalPaidVal        = summaryTotalPaidEl.textContent;
+    const totalInterestVal    = summaryTotalInterestEl.textContent;
+
+    // Row-wise data
+    let summaryData = [
+      ["Base Monthly Payment", `$${monthlyPaymentVal}`],
+      ["Total Monthly Payment (Incl. Opt. Costs)", `$${totalMonthlyPayVal}`],
+      ["Home Price", `$${homePriceVal}`],
+      ["Down Payment", `$${downPaymentVal}`],
+      ["Loan Amount", `$${loanAmountVal}`],
+      ["Total of All Mortgage Payments", `$${totalPaidVal}`],
+      ["Total Interest (Life of Loan)", `$${totalInterestVal}`],
+    ];
+
+    doc.autoTable({
+      startY: 60,
+      head: [["Item", "Value"]],
+      body: summaryData,
+      styles: { fontSize: 10, cellPadding: 4 },
+      headStyles: { fillColor: [22, 160, 133] }, // teal-ish
+    });
+
+    // Insert the bar chart (amortChart) as an image (monthly data)
+    if (amortChart) {
+      const barImgData = amortChart.toBase64Image();
+      doc.addImage(barImgData, "PNG", 40, doc.autoTable.previous.finalY + 20, 450, 250);
+    }
+
+    // Insert the pie chart if visible
+    let nextY = doc.autoTable.previous.finalY + 290;
+    if (pieChartContainerEl.style.display !== "none" && monthlyCostsPie) {
+      const pieImgData = monthlyCostsPie.toBase64Image();
+      doc.addImage(pieImgData, "PNG", 300, nextY, 200, 200);
+      nextY += 220;
+    }
+
+    // Finally, we add the monthly schedule to the PDF
+    const scheduleRows = monthlyAmortTableEl.querySelectorAll("tr");
+    let amortBody = [];
+    scheduleRows.forEach((row) => {
+      const cells = row.querySelectorAll("td");
+      if (cells.length === 4) {
+        amortBody.push([
+          cells[0].innerText,
+          cells[1].innerText,  // '$interest'
+          cells[2].innerText,  // '$principal'
+          cells[3].innerText   // '$balance'
+        ]);
+      }
+    });
+
+    doc.autoTable({
+      startY: nextY + 20,
+      head: [["Period (Month)", "Interest", "Principal", "Balance"]],
+      body: amortBody,
+      styles: { fontSize: 9, cellPadding: 3 },
+      headStyles: { fillColor: [52, 152, 219] },
+      margin: { bottom: 30 },
+    });
+
+    doc.save("MortgageSummary.pdf");
+  });
+</script>
+</body>
+</html>
