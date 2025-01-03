@@ -27,7 +27,7 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
 - **Monthly Costs Chart**:  
   - Visualizes the monthly costs, including optional inputs.
     
-![mortgage_charts](https://gist.github.com/user-attachments/assets/273e607f-09d9-42e7-b959-77394bb79081)
+![mortgage_charts]([https://gist.github.com/user-attachments/assets/273e607f-09d9-42e7-b959-77394bb79081](https://private-user-images.githubusercontent.com/46465419/399976799-efb97a7e-dc6e-45b8-b31e-19403c8ca414.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MzU5MTU3MzAsIm5iZiI6MTczNTkxNTQzMCwicGF0aCI6Ii80NjQ2NTQxOS8zOTk5NzY3OTktZWZiOTdhN2UtZGM2ZS00NWI4LWIzMWUtMTk0MDNjOGNhNDE0LnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTAxMDMlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwMTAzVDE0NDM1MFomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWUwYzQ1ZDhkM2IyYWUxZDRhODUzNTVmN2YxZGNjMGI0OTg0ZjBjMzdlNzU2ZWNjNjg5OTEwMWI0MzEzZmE2MzgmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.FhDlh3-XpMUDMugMpmiOMJ9MZoBeMW384vtsbfuP5Yo))
 
 ### Results Summary:
 - Provides a **comprehensive table** of mortgage information:  
