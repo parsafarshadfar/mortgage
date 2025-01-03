@@ -51,5 +51,5 @@
 ---
 
 ## Demo
-Check out the live demo: [Live Demo Link](https://parsafarshadfar.github.io/mortgage/)
+Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://parsafarshadfar.github.io/mortgage/)
 
