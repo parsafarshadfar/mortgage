@@ -27,7 +27,7 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
 - **Monthly Costs Chart**:  
   - Visualizes the monthly costs, including optional inputs.
     
-![mortgage_charts](https://gist.github.com/user-attachments/assets/efb97a7e-dc6e-45b8-b31e-19403c8ca414)
+![mortgage_charts](https://private-user-images.githubusercontent.com/46465419/399976799-efb97a7e-dc6e-45b8-b31e-19403c8ca414.png)
 
 
 ### Results Summary:
