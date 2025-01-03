@@ -388,7 +388,6 @@
           Mortgage Summary & Monthly Payment
         </button>
       </h2>
-      <!-- remove 'show' from the classList here so it doesn't auto-open -->
       <div id="collapseSummary" class="accordion-collapse collapse" aria-labelledby="summaryHeading" data-bs-parent="#mainAccordion">
         <div class="accordion-body" id="resultsSection" style="display:none;">
           <h3 class="mb-3">Mortgage Summary & Monthly Payment</h3>
@@ -926,7 +925,7 @@
     doc.setFontSize(14);
     doc.text("Mortgage Summary", 40, 40);
 
-    // Gather data
+    // Gather displayed data
     const monthlyPaymentVal   = mortgagePaymentEl.textContent;
     const totalMonthlyPayVal  = totalMonthlyPaymentEl.textContent;
     const homePriceVal        = summaryHomePriceEl.textContent;
@@ -935,15 +934,32 @@
     const totalPaidVal        = summaryTotalPaidEl.textContent;
     const totalInterestVal    = summaryTotalInterestEl.textContent;
 
-    // Row-wise data
+    // Also gather interest rate & amortization from user inputs
+    const interestRateVal     = interestRateEl.value;  // as typed by user
+    const amortYearsVal       = amortYearsEl.value;    // as typed by user
+
+    // Build row-wise data for the PDF ONLY (not changing the website table)
+    // The order of rows should be:
+    //  1) Base Monthly Payment
+    //  2) Total Monthly Payment (Including Optional Costs)
+    //  3) Home Price
+    //  4) Down Payment
+    //  5) Loan Amount
+    //  6) Interest Rate
+    //  7) Amortization
+    //  8) Total of All Mortgage Payments
+    //  9) Total Interest (Life of Loan)
+
     let summaryData = [
       ["Base Monthly Payment", `$${monthlyPaymentVal}`],
       ["Total Monthly Payment (Incl. Opt. Costs)", `$${totalMonthlyPayVal}`],
       ["Home Price", `$${homePriceVal}`],
       ["Down Payment", `$${downPaymentVal}`],
       ["Loan Amount", `$${loanAmountVal}`],
+      ["Interest Rate (% per year)", `${interestRateVal}%`],
+      ["Amortization (years)", amortYearsVal],
       ["Total of All Mortgage Payments", `$${totalPaidVal}`],
-      ["Total Interest (Life of Loan)", `$${totalInterestVal}`],
+      ["Total Interest (Life of Loan)", `$${totalInterestVal}`]
     ];
 
     doc.autoTable({
