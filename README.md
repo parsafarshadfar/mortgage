@@ -26,6 +26,8 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
   - Breakdown of **Interest** vs. **Principal** over time.  
 - **Monthly Costs Chart**:  
   - Visualizes the monthly costs, including optional inputs.
+    
+![mortgage_charts](https://gist.github.com/user-attachments/assets/273e607f-09d9-42e7-b959-77394bb79081)
 
 ### Results Summary:
 - Provides a **comprehensive table** of mortgage information:  
