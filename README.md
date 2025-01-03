@@ -5,6 +5,11 @@
 
 ---
 
+## Demo
+Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://parsafarshadfar.github.io/mortgage/)
+
+---
+
 ## Features
 
 ### Mortgage Calculator:
@@ -50,6 +55,5 @@
 
 ---
 
-## Demo
-Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://parsafarshadfar.github.io/mortgage/)
+
 
