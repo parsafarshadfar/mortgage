@@ -50,7 +50,7 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
 
 ### 📄 PDF Export:
 - Generate a **PDF summary** of:  
-  - Mortgage Summary Table  
+  - Mortgage Summary Table   
   - Amortization Chart  
   - Monthly Costs Pie Chart (if applicable)  
   - Amortization Schedule (Monthly)
