@@ -8,10 +8,6 @@
 ## 🚀 Demo  
 Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://parsafarshadfar.github.io/mortgage/)
 
-
-![mortgage_charts](/mortgage_charts_demo.png)
-
-
 ---
 
 ## ✨ Features  
@@ -31,6 +27,8 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
 - **Monthly Costs Chart**:  
   - Visualizes the monthly costs, including optional inputs.
     
+![mortgage_charts](/mortgage_charts_demo.png)
+
 
 ### Results Summary:
 - Provides a **comprehensive table** of mortgage information:  
