@@ -34,7 +34,7 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
 - Provides a **comprehensive table** of mortgage information:  
   - Base Monthly Payment  
   - Total Monthly Payment (with optional costs included)  
-  - Home Price  
+  - Home Price   
   - Down Payment  
   - Loan Amount  
   - Total of All Mortgage Payments  
