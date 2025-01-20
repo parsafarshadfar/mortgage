@@ -15,7 +15,7 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
 ### Mortgage Calculator:
 - Calculate **Base Monthly Payments** based on:
   - Home Price  
-  - Down Payment (in **dollars** or **percentage**)  
+  - Down Payment (in **dollars** or **percentage**)   
   - Amortization Period (Years)  
   - Interest Rate  
   - Compounding Method (**Monthly** or **Semi-Annual**)  
