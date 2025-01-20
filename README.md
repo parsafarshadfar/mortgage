@@ -43,7 +43,7 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
 ### Amortization Schedule:
 - Displays a detailed **monthly breakdown**:  
   - Period (Year-Month format, e.g., `2024-Jan`)  
-  - Interest Paid  
+  - Interest Paid   
   - Principal Paid  
   - Remaining Balance  
 - Automatically calculates and displays for the entire loan term.
