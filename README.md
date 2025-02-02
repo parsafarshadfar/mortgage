@@ -35,7 +35,7 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
   - Base Monthly Payment  
   - Total Monthly Payment (with optional costs included)  
   - Home Price   
-  - Down Payment  
+  - Down Payment   
   - Loan Amount  
   - Total of All Mortgage Payments  
   - Total Interest Paid Over the Loan Term  
