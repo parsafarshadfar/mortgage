@@ -49,7 +49,7 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
 - Automatically calculates and displays for the entire loan term.
 
 ### 📄 PDF Export:
-- Generate a **PDF summary** of:  
+- Generate a **PDF summary** of:   
   - Mortgage Summary Table   
   - Amortization Chart  
   - Monthly Costs Pie Chart (if applicable)  
