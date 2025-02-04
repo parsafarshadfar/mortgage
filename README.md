@@ -54,5 +54,5 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
   - Amortization Chart  
   - Monthly Costs Pie Chart (if applicable)  
   - Amortization Schedule (Monthly)
-
+ 
 ---
