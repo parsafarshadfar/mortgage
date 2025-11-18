@@ -1,16 +1,16 @@
 
-# 🏠 Mortgage Analysis
+# Mortgage Analysis
   
 **Mortgage Analysis** is a web-based application designed to calculate mortgage payments with detailed analysis and **interactive visualizations**. This tool is ideal for homeowners, real estate professionals, and anyone seeking a clear breakdown of their mortgage terms.
 
 ---
 
-## 🚀 Demo  
+## Demo  
 Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://parsafarshadfar.github.io/mortgage/)
 
 ---
 
-## ✨ Features  
+## Features  
 
 ### Mortgage Calculator:
 - Calculate **Base Monthly Payments** based on:
@@ -21,7 +21,7 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
   - Compounding Method (**Monthly** or **Semi-Annual**)  
 - Includes optional inputs for **Property Tax**, **Condo Fees**, and **Other Costs**.
 
-### 📈 Interactive Charts:
+### Interactive Charts:
 - **Amortization Chart**:  
   - Breakdown of **Interest** vs. **Principal** over time.  
 - **Monthly Costs Chart**:  
@@ -48,7 +48,7 @@ Check out the live demo: [https://parsafarshadfar.github.io/mortgage/](https://p
   - Remaining Balance  
 - Automatically calculates and displays for the entire loan term.
 
-### 📄 PDF Export:
+### PDF Export:
 - Generate a **PDF summary** of:   
   - Mortgage Summary Table   
   - Amortization Chart  
